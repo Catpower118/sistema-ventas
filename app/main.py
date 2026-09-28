@@ -5,6 +5,17 @@ def main(page: ft.Page):
     page.title = "Sistema de ventas"
     page.bgcolor = "black"
     
+    mostrar = Vista(page)
+    
+    page.add(
+        ft.Row(
+            controls=[
+                mostrar.sidebar(),
+                mostrar.contenido()
+            ],
+            expand=True
+        )
+    )
     
     
 if __name__ == "__main__":
