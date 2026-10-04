@@ -11,7 +11,7 @@ def main(page: ft.Page):
         ft.Row(
             controls=[
                 mostrar.sidebar(),
-                mostrar.contenido()
+                mostrar.contenedor_principal
             ],
             expand=True
         )
