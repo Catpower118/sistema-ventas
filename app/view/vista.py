@@ -1,10 +1,12 @@
-from components.logica import Logica    
+from components.logica import Logica
+from view.graficas import Grafica
 import flet as ft         
 
 class Vista:
     def __init__(self, page: ft.Page):
         self.page = page
-        self.Logica = Logica() 
+        self.Logica = Logica()
+        self.Grafica = Grafica()
         self.contenedor_principal = ft.Container(
             content=ft.Column(
                 controls=[
@@ -22,12 +24,13 @@ class Vista:
         self.contrasena_sesion = ft.TextField(label="contrasena", border_color="blue",
                                               cursor_color="blue", color="blue", password=True, can_reveal_password=True)
         self.database_sesion = ft.TextField(label="DataBase", border_color="blue", cursor_color="blue", color="blue")
+        self.database_sesion.on_submit = self.sesion_frontend
         
         # ENTRADAS PRODUCTOS
         self.producto_entrada = ft.TextField(label="Producto", border_color="blue", cursor_color="blue")
         self.cantidad_entrada = ft.TextField(label="Cantidad", border_color="blue", cursor_color="blue")
         self.precio_entrada = ft.TextField(label="Precio", border_color="blue", cursor_color="blue")
-        
+        self.precio_entrada.on_submit = self.guardar_venta_frontend
     # SIDEBAR
     def sidebar(self):
         return ft.Container(
@@ -98,6 +101,7 @@ class Vista:
     
     # TABLA DE VENTAS Y RANKING DE PRODUCTOS
     def tabla(self):
+        ventas, error = self.Logica.obtener_ventas()
         tabla = ft.DataTable(
             columns=[
                 ft.DataColumn(ft.Text("ID", color="green")),
@@ -105,8 +109,17 @@ class Vista:
                 ft.DataColumn(ft.Text("Precio", color="green")),
                 ft.DataColumn(ft.Text("Fecha", color="green"))
             ],
-            rows=[]
+            rows=[
+                ft.DataRow(cells=[
+                    ft.DataCell(ft.Text(str(v[0]), color="green")),
+                    ft.DataCell(ft.Text(str(v[1]), color="green")),
+                    ft.DataCell(ft.Text(str(v[2]), color="green")),
+                    ft.DataCell(ft.Text(str(v[3]), color="green")),
+                ]) for v in ventas
+            ]
         )
+        if error:
+            self.mensaje_error(error)
         return ft.Container(
             content=ft.Column(
                 controls=[tabla],
@@ -123,14 +136,23 @@ class Vista:
         )
     
     def ranking(self):
+        top, error = self.Logica.obtener_top_productos()
         table = ft.DataTable(
             columns=[
-                ft.DataColumn(ft.Text("ID", color="green")),
+                ft.DataColumn(ft.Text("#", color="green")),
                 ft.DataColumn(ft.Text("Producto", color="green")),
                 ft.DataColumn(ft.Text("Cantidad", color="green"))
             ],
-            rows=[]
-        ) 
+            rows=[
+                ft.DataRow(cells=[
+                    ft.DataCell(ft.Text(str(i + 1), color="green")),
+                    ft.DataCell(ft.Text(str(p[0]), color="green")),
+                    ft.DataCell(ft.Text(str(p[1]), color="green")),
+                ]) for i, p in enumerate(top)
+            ]
+        )
+        if error:
+            self.mensaje_error(error)
         contenedor = ft.Container(
             content=ft.Column(
                 controls=[table],
@@ -146,7 +168,14 @@ class Vista:
             border_radius=10    
         )
         ranking_contenedor = ft.Container(
-            content=ft.Text("Ranking de productos más vendidos", size=20, weight="bold", color="blue"),
+            content=ft.Column(
+                controls=[
+                    ft.Text("Ranking de productos mas vendidos", size=20, weight="bold", color="black"),
+                    ft.Button("Ver gráfica", bgcolor="blue", color="white", on_click=self.mostrar_grafica)
+                    ],
+                alignment=ft.MainAxisAlignment.CENTER,
+                horizontal_alignment=ft.CrossAxisAlignment.CENTER
+                ),
             width=400,
             height=250,
             padding=10,
@@ -164,6 +193,15 @@ class Vista:
             alignment=ft.MainAxisAlignment.CENTER
         )
         
+    def mostrar_grafica(self, e):
+        top, error = self.Logica.obtener_top_productos()
+        if error:
+            self.mensaje_error(error)
+        elif not top:
+            self.mensaje_error("No hay datos para graficar.")
+        else:
+            self.Grafica.grafica_top_productos(top)
+
     # MENSAJES DE ALERTA
     def mensaje_exito(self, mensaje):
         alerta = ft.AlertDialog(
@@ -209,11 +247,11 @@ class Vista:
     def sesion_frontend(self, e):
         try:
             usuario = self.entrada_sesion.value
-            puerto = self.localhost_sesion.value
+            host = self.localhost_sesion.value
             contrasena = self.contrasena_sesion.value
             database = self.database_sesion.value
             
-            exito, mensaje = self.Logica.sesion(puerto, usuario, contrasena, database)
+            exito, mensaje = self.Logica.sesion(host, usuario, contrasena, database)
             
             if exito:
                 self.mensaje_exito(mensaje)

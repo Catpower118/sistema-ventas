@@ -1,5 +1,7 @@
 from database.queries import DataBase        
 from config.conexion import Conexion
+import re    
+
 class Logica:
     def __init__(self):
         self.conexion = Conexion()
@@ -11,8 +13,8 @@ class Logica:
             return False, "Error: Todos los campos son obligatorios."
         if precio.count(".") > 1:
             return False, "Error: El precio no debe contener mas de un (.) decimal."
-        if not producto.replace(" ", "").isalpha():
-            return False, "Error: El nombre debe ser caracteres validos."
+        if not re.fullmatch(r"[A-Za-zÁÉÍÓÚáéíóúÑñ0-9 ]+", producto):
+            return False, "Error: El nombre solo debe contener letras, numeros y espacios."
         try:
             cantidad_int = int(cantidad)
             precio_float = float(precio)
@@ -25,6 +27,12 @@ class Logica:
         
         return self.db.insertar_venta(producto, cantidad_int, precio_float)
     
+    def obtener_ventas(self):
+        return self.db.obtener_ventas()
+
+    def obtener_top_productos(self):
+        return self.db.obtener_top_productos()
+
     def sesion(self, host, usuario, contrasena, database):
         if not host or not usuario or not contrasena or not database:
             return False, "Error: Todos los campos son obligatorios."

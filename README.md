@@ -1,0 +1,3 @@
+# Sistema de registro de ventas 
+Este es un pequeno proyecto desarrollado en Python, Flet y MySQL que registra las ventas del dia y permite visualizar todas en una tabla general a su vez que permite ver los productos que mas se vendieron,
+representandolos en una grafica y tabla para mejor visualizacion. Este proyecto esta pensado para pequenos comercios como tiendas de abarrote, ferreterias, etc.. que no buscan un programa complejo si no lo basico 
