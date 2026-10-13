@@ -2,6 +2,8 @@ from database.queries import DataBase
 from config.conexion import Conexion
 import re    
 
+
+
 class Logica:
     def __init__(self):
         self.conexion = Conexion()
@@ -25,7 +27,7 @@ class Logica:
         if precio_float <= 0:
             return False, "Error: El precio debe ser un numero positivo."
         
-        return self.db.insertar_venta(producto, cantidad_int, precio_float)
+        return self.db.insertar_venta(producto, cantidad_int, precio_float) 
     
     def obtener_ventas(self):
         return self.db.obtener_ventas()

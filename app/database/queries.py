@@ -1,4 +1,7 @@
 from config.conexion import Conexion
+from mysql.connector import Error
+from utils.generar_log import Logging
+import traceback
 
 class DataBase:
     def __init__(self, conexion):
@@ -15,7 +18,9 @@ class DataBase:
             self.conexion.conn.commit()
             cursor.close()
             return True, f"Venta: {producto} guardada exitosamente."
-        except Exception as e:
+        except Error as e:
+            Logging.add_to_log("error", str(e))
+            Logging.add_to_log("error", traceback.format_exc())
             return False, f"Error al guardar la venta: {e}"
 
     def obtener_ventas(self):
@@ -27,7 +32,9 @@ class DataBase:
             datos = cursor.fetchall()
             cursor.close()
             return datos, None
-        except Exception as e:
+        except Error as e:
+            Logging.add_to_log("error", str(e))
+            Logging.add_to_log("error", traceback.format_exc())
             return [], f"Error al obtener ventas: {e}"
 
     def obtener_top_productos(self):
@@ -39,7 +46,9 @@ class DataBase:
             datos = cursor.fetchall()
             cursor.close()
             return datos, None
-        except Exception as e:
+        except Error as e:
+            Logging.add_to_log("error", str(e))
+            Logging.add_to_log("error", traceback.format_exc())
             return [], f"Error al obtener ranking: {e}"
         
     def traer_registro(self):
@@ -52,6 +61,8 @@ class DataBase:
             resultado = cursor.fetchall()
             cursor.close()
             return True, resultado
-        except Exception as e:
+        except Error as e:
+            Logging.add_to_log("error", str(e))
+            Logging.add_to_log("error", traceback.format_exc())
             return False, f"Error al traer el registro: {e}"
         

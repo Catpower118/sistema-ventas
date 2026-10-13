@@ -1,6 +1,8 @@
 from components.logica import Logica
 from view.graficas import Grafica
-import flet as ft         
+import flet as ft    
+from utils.generar_log import Logging     
+import traceback
 
 class Vista:
     def __init__(self, page: ft.Page):
@@ -10,7 +12,8 @@ class Vista:
         self.contenedor_principal = ft.Container(
             content=ft.Column(
                 controls=[
-                    ft.Text("Bienvenido", color="blue", size=50, weight="bold")
+                    ft.Text("Bienvenido \neste sistema de registro de ventas basico",
+                            color="blue", size=50, weight="bold")
                     ]
                 ),
             expand=True,
@@ -18,6 +21,7 @@ class Vista:
             bgcolor="white",
             border_radius=10,
             alignment=ft.Alignment.CENTER
+            
         )
         self.entrada_sesion = ft.TextField(label="Usuario", border_color="blue", cursor_color="blue", color="blue")
         self.localhost_sesion = ft.TextField(label="Host", border_color="blue", cursor_color="blue", color="blue")
@@ -234,10 +238,13 @@ class Vista:
         
             if exito:
                 self.mensaje_exito(mensaje)
+                Logging.add_to_log("info", f"se anadio una nueva venta: {producto} - cantidad: {cantidad} - precio: {precio}")
             else:
                 self.mensaje_error(mensaje)
         except Exception as e:
-            self.mensaje_error(f"Ha ocurrido un error: {e}")
+            self.mensaje_error("Ha ocurrido un error")
+            Logging.add_to_log("error", str(e))
+            Logging.add_to_log("error", traceback.format_exc())
         finally:
             self.producto_entrada.value = ""
             self.cantidad_entrada.value = ""
@@ -255,10 +262,13 @@ class Vista:
             
             if exito:
                 self.mensaje_exito(mensaje)
+                Logging.add_to_log("info", "sesion iniciada correctamente")
             else:
                 self.mensaje_error(mensaje)
         except Exception as e:
-            self.mensaje_error(f"Ha ocurrido un error: {e}")
+            self.mensaje_error("Ha ocurrido un error")
+            Logging.add_to_log("error", str(e))
+            Logging.add_to_log("error", traceback.format_exc())
         finally:
             self.entrada_sesion.value = ""
             self.localhost_sesion.value = ""
