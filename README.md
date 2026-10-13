@@ -19,8 +19,11 @@ representandolos en una grafica y tabla para mejor visualizacion. Este proyecto 
 - matplotlib
 
 ## Instalacion
-
-
+```bash
+git https://github.com/Catpower118/sistema-ventas
+cd sistema_ventas
+pip install -r requirements.txt
+```
 ## Configuracion MySQL
 ```sql
 CREATE DATABASE sistema_ventas;
