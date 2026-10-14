@@ -50,19 +50,3 @@ class DataBase:
             Logging.add_to_log("error", str(e))
             Logging.add_to_log("error", traceback.format_exc())
             return [], f"Error al obtener ranking: {e}"
-        
-    def traer_registro(self):
-        if self.conexion.conn is None:
-            return False, "Error: No hay conexion a la base de datos. Llene los campos de sesion."
-        try:
-            cursor = self.conexion.conn.cursor()
-            sql = "SELECT * FROM ventas"
-            cursor.execute(sql)
-            resultado = cursor.fetchall()
-            cursor.close()
-            return True, resultado
-        except Error as e:
-            Logging.add_to_log("error", str(e))
-            Logging.add_to_log("error", traceback.format_exc())
-            return False, f"Error al traer el registro: {e}"
-        

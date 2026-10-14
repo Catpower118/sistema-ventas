@@ -4,9 +4,11 @@ import os
 
 class Logging:
     def __set_logger(self):
-        log_directorio = "app/utils/logs"
+        log_directorio = os.path.join(os.path.dirname(__file__), "logs")
         log_filename = "app.log"
-        
+
+        os.makedirs(log_directorio, exist_ok=True)
+
         logger = logging.getLogger(__name__)
         logger.setLevel(logging.DEBUG)
         
@@ -37,7 +39,7 @@ class Logging:
             elif (level == "info"):  # Si el nivel es info
                 logger.info(message)  # Registra como información
             elif (level == "warn"):  # Si el nivel es advertencia
-                logger.warn(message)  # Registra como advertencia
+                logger.warning(message)  # Registra como advertencia
         except Exception as ex:  # Si hay error al registrar
             print(traceback.format_exc())  
             print(ex)  

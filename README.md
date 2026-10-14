@@ -20,7 +20,7 @@ representandolos en una grafica y tabla para mejor visualizacion. Este proyecto 
 
 ## Instalacion
 ```bash
-git https://github.com/Catpower118/sistema-ventas
+git clone https://github.com/Catpower118/sistema-ventas
 cd sistema_ventas
 pip install -r requirements.txt
 ```
@@ -28,9 +28,9 @@ pip install -r requirements.txt
 ```sql
 CREATE DATABASE sistema_ventas;
 
-CREATE TABLE productos(
+CREATE TABLE ventas(
 id INT AUTO_INCREMENT PRIMARY KEY,
-nombre VARCHAR(50) NOT NULL,
+producto VARCHAR(50) NOT NULL,
 cantidad INT NOT NULL,
 precio DECIMAL(10, 2) NOT NULL,
 fecha DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
@@ -39,6 +39,7 @@ fecha DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 
 ## Ejecucion
 ```bash
+cd app
 python main.py
 ```
 
